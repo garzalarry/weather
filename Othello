@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .widget {
+            width: 300px;
+            padding: 20px;
+            background-color: #1e2a38;
+            color: #fff;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .widget h2 {
+            font-size: 24px;
+        }
+
+        .temperature {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .condition {
+            font-size: 18px;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .location {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget" id="weather-widget">
+        <h2>Weather</h2>
+        <div class="temperature" id="temp">--°F</div>
+        <img id="weather-icon" class="icon" src="" alt="Weather Icon">
+        <div class="condition" id="weather-condition">Loading...</div>
+        <div class="location" id="location">--</div>
+        <div class="error" id="error-message"></div>
+    </div>
+
+    <script>
+        const apiKey = 'c024dd9029810e727208843c5024d721';  // Replace with your OpenWeatherMap API key
+        const city = 'Othello'; // You can replace with any location you want
+        const country = 'US'; // Change to the relevant country code
+
+        const weatherUrl = https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=imperial;
+
+        // Function to fetch weather data
+        function fetchWeatherData() {
+            fetch(weatherUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('City not found or invalid API key');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const temp = data.main.temp;
+                    const weatherCondition = data.weather[0].description;
+                    const icon = data.weather[0].icon;
+                    const locationName = data.name;
+
+                    // Update the widget with weather data
+                    document.getElementById('temp').textContent = ${temp}°F;
+                    document.getElementById('weather-condition').textContent = weatherCondition;
+                    document.getElementById('weather-icon').src = https://openweathermap.org/img/wn/${icon}.png;
+                    document.getElementById('location').textContent = locationName;
+                    document.getElementById('error-message').textContent = '';  // Clear error message if successful
+                })
+                .catch(error => {
+                    // Handle errors (e.g., city not found or invalid API key)
+                    document.getElementById('weather-widget').innerHTML = 
+                        <h2>Error</h2>
+                        <p class="error">${error.message}</p>
+                    ;
+                });
+        }
+
+        // Call the function to fetch weather data when the page loads
+        fetchWeatherData();
+    </script>
+</body>
+</html>
